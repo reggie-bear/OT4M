@@ -1,15 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import SearchBar from "@/components/SearchBar";
-import SearchResults from "@/components/SearchResults";
+import MessagesSearch from "@/components/MessagesSearch";
 import CountUp from "@/components/CountUp";
 import DrawBorderQuote from "@/components/DrawBorderQuote";
 import FillButton from "@/components/FillButton";
 import MaskHeadline from "@/components/MaskHeadline";
 import SectionHeader from "@/components/SectionHeader";
 import { useInView } from "@/hooks/useInView";
-import { SearchResult } from "@/lib/types";
 
 // ─── ScheduleRow — 2-col grid cell with paint-brush hover ────────────────────
 function ScheduleRow({ label, value, borderRight, borderBottom }: {
@@ -139,8 +137,6 @@ const STATS = [
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Home() {
-  const [results, setResults] = useState<SearchResult | null>(null);
-  const [loading, setLoading] = useState(false);
   const [activeCard, setActive] = useState<number | null>(null);
 
   return (
@@ -155,10 +151,8 @@ export default function Home() {
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.5rem, 9vw, 8rem)", lineHeight: 0.9, letterSpacing: "0.01em", color: "var(--text)", marginBottom: "1.5rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
           <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 400, fontStyle: "italic", color: "var(--text-muted)", marginBottom: "2.5rem", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
           <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
-            <SearchBar large autoFocus onResults={setResults} onLoading={setLoading} />
-            <p style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", color: "var(--text-light)", marginTop: "0.75rem", letterSpacing: "0.03em" }}>Ask anything — powered by 15+ years of biblical teaching</p>
+            <MessagesSearch />
           </div>
-          <SearchResults result={results} loading={loading} />
         </div>
 
         <div className="max-w-3xl mx-auto w-full" style={{ marginTop: "4rem", display: "flex", flexWrap: "wrap", gap: "2rem 3rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 480ms both", position: "relative" }}>
