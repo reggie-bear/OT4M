@@ -149,7 +149,8 @@ export default function Home() {
         <div className="max-w-3xl mx-auto w-full" style={{ position: "relative" }}>
           <div style={{ fontFamily: "var(--font-body)", fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.25rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) both" }}>Alpharetta, Georgia · Est. 2009</div>
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.5rem, 9vw, 8rem)", lineHeight: 0.9, letterSpacing: "0.01em", color: "var(--text)", marginBottom: "1.5rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
-          <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 400, fontStyle: "italic", color: "var(--text-muted)", marginBottom: "2.5rem", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 400, fontStyle: "italic", color: "var(--text-muted)", marginBottom: "2rem", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.88rem", color: "var(--text-muted)", lineHeight: 1.65, marginBottom: "1.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 260ms both" }}>Ask a question and our AI finds the exact teaching you need — or search by topic below.</p>
           <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
             <MessagesSearch />
           </div>
