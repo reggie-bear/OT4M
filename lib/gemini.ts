@@ -3,7 +3,7 @@ import { VideoEmbed, VideoMatch } from "./types";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const EMBED_MODEL = "gemini-embedding-2";
-const GEN_MODEL   = "gemini-2.0-flash";
+const GEN_MODEL   = "gemini-2.5-flash";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
