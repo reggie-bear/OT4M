@@ -25,6 +25,7 @@ export default function VideoSearch({ dark = false }: { dark?: boolean }) {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const fg = dark ? 'text-[#f7f4ef]' : 'text-[#1a1a18]'
   const inputBg = dark ? 'bg-[#f7f4ef]/10 border-[#f7f4ef]/20 text-[#f7f4ef] placeholder:text-[#f7f4ef]/30' : 'bg-white border-[#1a1a18]/20 text-[#1a1a18] placeholder:text-[#1a1a18]/30'
@@ -38,15 +39,22 @@ export default function VideoSearch({ dark = false }: { dark?: boolean }) {
     if (!query.trim()) return
     setLoading(true)
     setSearched(true)
+    setError(null)
 
-    const res = await fetch('/api/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
-    })
-    const data = await res.json()
-    setResults(data.results ?? [])
-    setLoading(false)
+    try {
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      })
+      const data = await res.json()
+      if (data.error) setError(data.error)
+      else setResults(data.results ?? [])
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -70,7 +78,13 @@ export default function VideoSearch({ dark = false }: { dark?: boolean }) {
         </button>
       </form>
 
-      {searched && !loading && results.length === 0 && (
+      {error && (
+        <p className={`mt-8 text-sm text-red-400`} style={{ fontFamily: 'system-ui, sans-serif' }}>
+          Error: {error}
+        </p>
+      )}
+
+      {searched && !loading && !error && results.length === 0 && (
         <p className={`mt-8 text-sm ${emptyColor}`} style={{ fontFamily: 'system-ui, sans-serif' }}>
           No results found. Try different words.
         </p>
