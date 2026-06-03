@@ -3,23 +3,27 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import { createClient } from '@supabase/supabase-js'
 import { YoutubeTranscript } from 'youtube-transcript'
 import { google } from 'googleapis'
+import ws from 'ws'
 
 const CHANNEL_ID = process.env.OT4M_CHANNEL_ID!
-const CHUNK_SIZE = 500   // tokens (approx words)
+const CHUNK_SIZE = 500
 const CHUNK_OVERLAP = 50
-const BATCH_SIZE = 20    // chunks per embedding API call
+const BATCH_SIZE = 5          // smaller batches to avoid rate limits
+const BATCH_DELAY_MS = 1000   // 1s between batches
 
 const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { realtime: { transport: ws } }
 )
 const youtube = google.youtube({ version: 'v3', auth: process.env.YOUTUBE_API_KEY })
 
-// ── Fetch all video IDs from channel ────────────────────────────────────────
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+
+// ── Fetch all video IDs from channel ─────────────────────────────────────────
 
 async function fetchChannelVideos() {
-  // Get uploads playlist ID
   const channelRes = await youtube.channels.list({
     part: ['contentDetails'],
     id: [CHANNEL_ID],
@@ -55,18 +59,20 @@ async function fetchChannelVideos() {
   return videos
 }
 
-// ── Chunk transcript into ~500-word segments ─────────────────────────────────
+// ── Chunk transcript into ~500-word segments ──────────────────────────────────
 
-function chunkTranscript(transcript: { text: string; start: number; duration: number }[]) {
+function chunkTranscript(transcript: { text: string; start: number; duration?: number }[]) {
   const chunks: { text: string; start: number; end: number }[] = []
   let words: string[] = []
   let chunkStart = transcript[0]?.start ?? 0
-  let lastEnd = 0
+  let lastEnd = transcript[0]?.start ?? 0
 
   for (const entry of transcript) {
     const entryWords = entry.text.replace(/\n/g, ' ').split(' ').filter(Boolean)
     words.push(...entryWords)
-    lastEnd = entry.start + entry.duration
+    // guard against missing/NaN duration
+    const duration = typeof entry.duration === 'number' && isFinite(entry.duration) ? entry.duration : 0
+    lastEnd = entry.start + duration
 
     if (words.length >= CHUNK_SIZE) {
       chunks.push({ text: words.join(' '), start: Math.floor(chunkStart), end: Math.floor(lastEnd) })
@@ -82,7 +88,29 @@ function chunkTranscript(transcript: { text: string; start: number; duration: nu
   return chunks
 }
 
-// ── Embed a batch of text strings ────────────────────────────────────────────
+// ── Embed a batch of texts with retry on 429 ─────────────────────────────────
+
+async function embedWithRetry(model: any, text: string, retries = 5): Promise<number[]> {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const res = await model.embedContent({
+        content: { parts: [{ text }], role: 'user' },
+        taskType: 'RETRIEVAL_DOCUMENT' as any,
+        outputDimensionality: 1536,
+      } as any)
+      return res.embedding.values
+    } catch (err: any) {
+      if (err?.status === 429) {
+        const wait = 10000 * (attempt + 1) // 10s, 20s, 30s...
+        console.log(`\n  ⏳ Rate limited — waiting ${wait / 1000}s...`)
+        await sleep(wait)
+      } else {
+        throw err
+      }
+    }
+  }
+  throw new Error('Max retries exceeded on embedding')
+}
 
 async function embedBatch(texts: string[]): Promise<number[][]> {
   const model = genai.getGenerativeModel({ model: 'gemini-embedding-2' })
@@ -90,14 +118,10 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
 
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE)
-    const embeddings = await Promise.all(
-      batch.map(text =>
-        model.embedContent({ content: { parts: [{ text }], role: 'user' }, taskType: 'RETRIEVAL_DOCUMENT' as any, outputDimensionality: 1536 } as any)
-          .then(r => r.embedding.values)
-      )
-    )
+    const embeddings = await Promise.all(batch.map(t => embedWithRetry(model, t)))
     results.push(...embeddings)
     process.stdout.write(`  embedded ${Math.min(i + BATCH_SIZE, texts.length)}/${texts.length} chunks\r`)
+    if (i + BATCH_SIZE < texts.length) await sleep(BATCH_DELAY_MS)
   }
 
   return results
@@ -110,7 +134,6 @@ async function main() {
   const allVideos = await fetchChannelVideos()
   console.log(`Found ${allVideos.length} videos`)
 
-  // Find already-ingested video IDs
   const { data: existing } = await supabase.from('ot4m_videos').select('id')
   const existingIds = new Set(existing?.map(r => r.id) ?? [])
   const toProcess = allVideos.filter(v => !existingIds.has(v.id))
@@ -120,12 +143,11 @@ async function main() {
     const video = toProcess[i]
     console.log(`[${i + 1}/${toProcess.length}] ${video.title}`)
 
-    // Fetch transcript
     let transcript
     try {
       transcript = await YoutubeTranscript.fetchTranscript(video.id)
     } catch {
-      console.log(`  ⚠ No transcript available — skipping`)
+      console.log(`  ⚠ No transcript — skipping`)
       continue
     }
 
@@ -134,15 +156,12 @@ async function main() {
       continue
     }
 
-    // Chunk
     const chunks = chunkTranscript(transcript)
     console.log(`  ${chunks.length} chunks`)
 
-    // Embed
     const embeddings = await embedBatch(chunks.map(c => c.text))
     console.log()
 
-    // Insert video
     await supabase.from('ot4m_videos').upsert({
       id: video.id,
       title: video.title,
@@ -150,7 +169,6 @@ async function main() {
       thumbnail_url: video.thumbnail,
     })
 
-    // Insert chunks
     const rows = chunks.map((chunk, idx) => ({
       video_id: video.id,
       chunk_index: idx,
