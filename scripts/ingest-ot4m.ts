@@ -61,23 +61,22 @@ async function fetchChannelVideos() {
 
 // ── Chunk transcript into ~500-word segments ──────────────────────────────────
 
-function chunkTranscript(transcript: { text: string; start: number; duration?: number }[]) {
+function chunkTranscript(transcript: { text: string; offset: number; duration?: number }[]) {
   const chunks: { text: string; start: number; end: number }[] = []
   let words: string[] = []
-  let chunkStart = transcript[0]?.start ?? 0
-  let lastEnd = transcript[0]?.start ?? 0
+  let chunkStart = transcript[0]?.offset ?? 0
+  let lastEnd = transcript[0]?.offset ?? 0
 
   for (const entry of transcript) {
     const entryWords = entry.text.replace(/\n/g, ' ').split(' ').filter(Boolean)
     words.push(...entryWords)
-    // guard against missing/NaN duration
     const duration = typeof entry.duration === 'number' && isFinite(entry.duration) ? entry.duration : 0
-    lastEnd = entry.start + duration
+    lastEnd = entry.offset + duration
 
     if (words.length >= CHUNK_SIZE) {
       chunks.push({ text: words.join(' '), start: Math.floor(chunkStart), end: Math.floor(lastEnd) })
       words = words.slice(words.length - CHUNK_OVERLAP)
-      chunkStart = entry.start
+      chunkStart = entry.offset
     }
   }
 
