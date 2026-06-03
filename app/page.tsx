@@ -3,6 +3,7 @@
 import { useState } from "react";
 import MessagesSearch from "@/components/MessagesSearch";
 import CountUp from "@/components/CountUp";
+import { CountdownDark } from "@/components/FridayCountdown";
 import DrawBorderQuote from "@/components/DrawBorderQuote";
 import FillButton from "@/components/FillButton";
 import MaskHeadline from "@/components/MaskHeadline";
@@ -142,31 +143,51 @@ export default function Home() {
   return (
     <>
       {/* ── HERO ── */}
-      <section style={{ minHeight: "calc(100vh - var(--header-height))", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 1.5rem 3rem", borderBottom: "2px solid var(--border)", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "url('/bible-bg.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.07, filter: "sepia(0.55) brightness(1.12) contrast(0.82)", WebkitMaskImage: "radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, rgba(0,0,0,0.55) 52%, transparent 78%)", maskImage: "radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, rgba(0,0,0,0.55) 52%, transparent 78%)", pointerEvents: "none" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`, backgroundRepeat: "repeat", pointerEvents: "none", opacity: 0.6 }} />
+      <section style={{ background: "var(--bg-dark)", display: "flex", flexDirection: "column", justifyContent: "center", padding: "5rem 1.5rem 4rem", borderBottom: "2px solid var(--border)", position: "relative", overflow: "hidden" }}>
+        {/* Bible texture */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "url('/bible-bg.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.05, filter: "sepia(0.55) brightness(1.12) contrast(0.82)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`, backgroundRepeat: "repeat", pointerEvents: "none", opacity: 0.5 }} />
 
-        <div className="max-w-3xl mx-auto w-full" style={{ position: "relative" }}>
-          <div style={{ fontFamily: "var(--font-body)", fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.25rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) both" }}>Alpharetta, Georgia · Est. 2009</div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.5rem, 9vw, 8rem)", lineHeight: 0.9, letterSpacing: "0.01em", color: "var(--text)", marginBottom: "1.5rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
-          <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 400, fontStyle: "italic", color: "var(--text-muted)", marginBottom: "2.5rem", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
-          <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
+        <div className="max-w-5xl mx-auto w-full" style={{ position: "relative" }}>
+
+          {/* Eyebrow */}
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.5rem", animation: "fadeUp 600ms cubic-bezier(0.16,1,0.3,1) both" }}>
+            One Thing for Men · Est. 2009
+          </div>
+
+          {/* Primary headline — the #1 message */}
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.5rem, 10vw, 9rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "var(--bg)", marginBottom: "0", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>
+            WE MEET<br />IN PERSON
+          </h1>
+
+          {/* Location + time — burnt orange accent, same display font */}
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.4rem, 3.5vw, 2.5rem)", color: "var(--accent)", letterSpacing: "0.04em", marginTop: "0.5rem", marginBottom: "2.25rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 180ms both" }}>
+            EVERY FRIDAY · 7AM · ALPHARETTA, GA
+          </div>
+
+          {/* Countdown timer */}
+          <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 280ms both", marginBottom: "2.5rem" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-light)", marginBottom: "0.6rem" }}>
+              Next Friday in
+            </div>
+            <CountdownDark />
+          </div>
+
+          {/* Divider */}
+          <div style={{ width: "100%", height: 1, background: "rgba(244,239,232,0.12)", marginBottom: "2.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 340ms both" }} />
+
+          {/* Secondary — search callout */}
+          <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 380ms both" }}>
+            <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1rem, 2vw, 1.2rem)", fontStyle: "italic", color: "rgba(244,239,232,0.55)", marginBottom: "1.5rem", lineHeight: 1.5 }}>
+              Search through our database of over 400 Bible teachings for men.
+            </p>
             <MessagesSearch />
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto w-full" style={{ marginTop: "4rem", display: "flex", flexWrap: "wrap", gap: "2rem 3rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 480ms both", position: "relative" }}>
-          {STATS.map(s => (
-            <div key={s.label}>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "1.75rem", lineHeight: 1, color: "var(--text)", letterSpacing: "0.02em" }}><CountUp target={s.value} /></div>
-              <div style={{ fontFamily: "var(--font-body)", fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-light)", marginTop: "0.2rem" }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-
         <style>{`
-          @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-          @keyframes heroReveal { from { opacity:0; transform:translateY(32px) skewY(1deg); } to { opacity:1; transform:translateY(0) skewY(0deg); } }
+          @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+          @keyframes heroReveal { from { opacity:0; transform:translateY(28px) skewY(0.8deg); } to { opacity:1; transform:translateY(0) skewY(0deg); } }
         `}</style>
       </section>
 
