@@ -92,7 +92,7 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
     const batch = texts.slice(i, i + BATCH_SIZE)
     const embeddings = await Promise.all(
       batch.map(text =>
-        model.embedContent({ content: { parts: [{ text }], role: 'user' }, taskType: 'RETRIEVAL_DOCUMENT' as any })
+        model.embedContent({ content: { parts: [{ text }], role: 'user' }, taskType: 'RETRIEVAL_DOCUMENT' as any, outputDimensionality: 1536 } as any)
           .then(r => r.embedding.values)
       )
     )

@@ -19,14 +19,14 @@ create table ot4m_chunks (
   timestamp_start int not null,
   timestamp_end   int not null,
   text            text not null,
-  embedding       vector(3072),
+  embedding       vector(1536),
   created_at      timestamptz default now()
 );
 
 create index on ot4m_chunks using hnsw (embedding vector_cosine_ops);
 
 -- Search function called by the API route
-create or replace function search_ot4m(query_embedding vector(3072), match_count int default 8)
+create or replace function search_ot4m(query_embedding vector(1536), match_count int default 8)
 returns table (
   video_id        text,
   title           text,

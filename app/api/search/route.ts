@@ -17,7 +17,8 @@ export async function POST(req: NextRequest) {
   const { embedding } = await model.embedContent({
     content: { parts: [{ text: query }], role: 'user' },
     taskType: 'RETRIEVAL_QUERY' as any,
-  })
+    outputDimensionality: 1536,
+  } as any)
 
   const vector = JSON.stringify(embedding.values)
 
