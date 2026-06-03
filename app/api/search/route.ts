@@ -1,5 +1,3 @@
-export const runtime = 'edge'
-
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
