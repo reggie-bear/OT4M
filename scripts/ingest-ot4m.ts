@@ -8,8 +8,7 @@ import ws from 'ws'
 const CHANNEL_ID = process.env.OT4M_CHANNEL_ID!
 const CHUNK_SIZE = 500
 const CHUNK_OVERLAP = 50
-const BATCH_SIZE = 5          // smaller batches to avoid rate limits
-const BATCH_DELAY_MS = 1000   // 1s between batches
+const CALL_DELAY_MS = 600     // ms between each embedding call
 
 const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 const supabase = createClient(
@@ -115,12 +114,11 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
   const model = genai.getGenerativeModel({ model: 'gemini-embedding-2' })
   const results: number[][] = []
 
-  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-    const batch = texts.slice(i, i + BATCH_SIZE)
-    const embeddings = await Promise.all(batch.map(t => embedWithRetry(model, t)))
-    results.push(...embeddings)
-    process.stdout.write(`  embedded ${Math.min(i + BATCH_SIZE, texts.length)}/${texts.length} chunks\r`)
-    if (i + BATCH_SIZE < texts.length) await sleep(BATCH_DELAY_MS)
+  for (let i = 0; i < texts.length; i++) {
+    const embedding = await embedWithRetry(model, texts[i])
+    results.push(embedding)
+    process.stdout.write(`  embedded ${i + 1}/${texts.length} chunks\r`)
+    await sleep(CALL_DELAY_MS)
   }
 
   return results
