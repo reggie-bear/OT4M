@@ -1,3 +1,5 @@
+export const runtime = 'edge'
+
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
@@ -26,15 +28,21 @@ export async function POST(req: NextRequest) {
   const { data, error } = await supabase.rpc('search_ot4m', { query_embedding: vector, match_count: 8 })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  const results = data.map((row: any) => ({
-    video_id: row.video_id,
-    title: row.title,
-    thumbnail_url: row.thumbnail_url,
-    timestamp_start: row.timestamp_start,
-    text: row.text,
-    similarity: row.similarity,
-    url: `https://youtube.com/watch?v=${row.video_id}&t=${row.timestamp_start}`,
-  }))
+  const results = data.map((row: any) => {
+    // youtube-transcript returns ms for some videos, seconds for others
+    const seconds = row.timestamp_start > 100000
+      ? Math.floor(row.timestamp_start / 1000)
+      : row.timestamp_start
+    return {
+      video_id: row.video_id,
+      title: row.title,
+      thumbnail_url: row.thumbnail_url,
+      timestamp_start: seconds,
+      text: row.text,
+      similarity: row.similarity,
+      url: `https://youtube.com/watch?v=${row.video_id}&t=${seconds}`,
+    }
+  })
 
   return NextResponse.json({ results })
 }

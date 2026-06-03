@@ -9,6 +9,7 @@
     "ingest": "tsx --env-file=.env.local scripts/ingest-ot4m.ts"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.107.0",
     "@types/ws": "^8.18.1",
