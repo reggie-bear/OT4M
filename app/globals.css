@@ -13,7 +13,7 @@
   --border:        #1A1510;
   --border-light:  #D4C9B5;
   /* Header = 42px banner + 64px nav + 2px bottom border */
-  --header-height: 108px;
+  --header-height: 150px;
 }
 
 @keyframes tick {

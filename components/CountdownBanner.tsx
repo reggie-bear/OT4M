@@ -131,7 +131,7 @@ function Unit({ value, label }: { value: number; label: string }) {
         key={value}
         style={{
           fontFamily: "var(--font-display)",
-          fontSize: "1.25rem",
+          fontSize: "2.5rem",
           lineHeight: 1,
           color: "var(--accent)",
           letterSpacing: "0.04em",
@@ -143,7 +143,7 @@ function Unit({ value, label }: { value: number; label: string }) {
       <span
         style={{
           fontFamily: "var(--font-body)",
-          fontSize: "0.5rem",
+          fontSize: "1rem",
           fontWeight: 600,
           letterSpacing: "0.2em",
           textTransform: "uppercase",
@@ -162,7 +162,7 @@ function Sep() {
     <span
       style={{
         fontFamily: "var(--font-display)",
-        fontSize: "1.1rem",
+        fontSize: "2.2rem",
         color: "rgba(244,239,232,0.5)",
         lineHeight: 1,
         marginBottom: "0.7rem",
@@ -201,7 +201,7 @@ export default function CountdownBanner() {
     return (
       <div
         style={{
-          height: "42px",
+          height: "84px",
           background: "var(--bg-dark)",
           borderBottom: "1px solid rgba(244,239,232,0.08)",
         }}
@@ -214,7 +214,7 @@ export default function CountdownBanner() {
     return (
       <div
         style={{
-          height: "42px",
+          height: "84px",
           background: "var(--bg-dark)",
           borderBottom: "1px solid rgba(244,239,232,0.08)",
           display: "flex",
@@ -227,8 +227,8 @@ export default function CountdownBanner() {
         <span
           style={{
             display: "inline-block",
-            width: "7px",
-            height: "7px",
+            width: "14px",
+            height: "14px",
             borderRadius: "50%",
             background: "var(--accent)",
             animation: "liveGlow 1.4s ease-in-out infinite",
@@ -238,7 +238,7 @@ export default function CountdownBanner() {
         <span
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "0.65rem",
+            fontSize: "1.3rem",
             fontWeight: 600,
             letterSpacing: "0.2em",
             textTransform: "uppercase",
@@ -249,8 +249,8 @@ export default function CountdownBanner() {
         </span>
         <span
           style={{
-            width: "1px",
-            height: "14px",
+            width: "2px",
+            height: "28px",
             background: "rgba(244,239,232,0.3)",
             flexShrink: 0,
           }}
@@ -258,7 +258,7 @@ export default function CountdownBanner() {
         <span
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "0.6rem",
+            fontSize: "1.2rem",
             fontWeight: 500,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
@@ -289,7 +289,7 @@ export default function CountdownBanner() {
     return (
       <div
         style={{
-          height: "42px",
+          height: "84px",
           background: "var(--bg-dark)",
           borderBottom: "1px solid rgba(244,239,232,0.08)",
           display: "flex",
@@ -301,7 +301,7 @@ export default function CountdownBanner() {
         <span
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "0.6rem",
+            fontSize: "1.2rem",
             fontWeight: 600,
             letterSpacing: "0.2em",
             textTransform: "uppercase",
@@ -312,8 +312,8 @@ export default function CountdownBanner() {
         </span>
         <span
           style={{
-            width: "1px",
-            height: "14px",
+            width: "2px",
+            height: "28px",
             background: "rgba(244,239,232,0.3)",
             flexShrink: 0,
           }}
@@ -321,7 +321,7 @@ export default function CountdownBanner() {
         <span
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "0.65rem",
+            fontSize: "1.3rem",
             fontWeight: 600,
             letterSpacing: "0.1em",
             color: "var(--accent)",
@@ -331,8 +331,8 @@ export default function CountdownBanner() {
         </span>
         <span
           style={{
-            width: "1px",
-            height: "14px",
+            width: "2px",
+            height: "28px",
             background: "rgba(244,239,232,0.3)",
             flexShrink: 0,
           }}
@@ -340,7 +340,7 @@ export default function CountdownBanner() {
         <span
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "0.6rem",
+            fontSize: "1.2rem",
             fontWeight: 500,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
@@ -358,7 +358,7 @@ export default function CountdownBanner() {
   return (
     <div
       style={{
-        height: "42px",
+        height: "84px",
         background: "var(--bg-dark)",
         borderBottom: "1px solid rgba(244,239,232,0.08)",
         display: "flex",
@@ -374,7 +374,7 @@ export default function CountdownBanner() {
         className="hidden sm:block"
         style={{
           fontFamily: "var(--font-body)",
-          fontSize: "0.6rem",
+          fontSize: "1.2rem",
           fontWeight: 600,
           letterSpacing: "0.2em",
           textTransform: "uppercase",
@@ -390,7 +390,7 @@ export default function CountdownBanner() {
         className="block sm:hidden"
         style={{
           fontFamily: "var(--font-body)",
-          fontSize: "0.55rem",
+          fontSize: "1.1rem",
           fontWeight: 600,
           letterSpacing: "0.15em",
           textTransform: "uppercase",
@@ -403,7 +403,7 @@ export default function CountdownBanner() {
       </span>
 
       {/* Divider */}
-      <span style={{ width: "1px", height: "14px", background: "rgba(244,239,232,0.25)", flexShrink: 0 }} />
+      <span style={{ width: "2px", height: "28px", background: "rgba(244,239,232,0.25)", flexShrink: 0 }} />
 
       {/* Clock units */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: "clamp(0.3rem, 1vw, 0.75rem)" }}>
@@ -423,7 +423,7 @@ export default function CountdownBanner() {
       {/* Divider */}
       <span
         className="hidden md:block"
-        style={{ width: "1px", height: "14px", background: "rgba(244,239,232,0.25)", flexShrink: 0 }}
+        style={{ width: "2px", height: "28px", background: "rgba(244,239,232,0.25)", flexShrink: 0 }}
       />
 
       {/* Context */}
@@ -431,7 +431,7 @@ export default function CountdownBanner() {
         className="hidden md:block"
         style={{
           fontFamily: "var(--font-body)",
-          fontSize: "0.6rem",
+          fontSize: "1.2rem",
           fontWeight: 500,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
