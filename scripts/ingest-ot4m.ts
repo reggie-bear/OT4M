@@ -8,7 +8,7 @@ import ws from 'ws'
 const CHANNEL_ID = process.env.OT4M_CHANNEL_ID!
 const CHUNK_SIZE = 500
 const CHUNK_OVERLAP = 50
-const CALL_DELAY_MS = 600     // ms between each embedding call
+const CALL_DELAY_MS = 2000    // ms between each embedding call
 
 const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 const supabase = createClient(
@@ -88,8 +88,9 @@ function chunkTranscript(transcript: { text: string; offset: number; duration?: 
 
 // ── Embed a batch of texts with retry on 429 ─────────────────────────────────
 
-async function embedWithRetry(model: any, text: string, retries = 5): Promise<number[]> {
-  for (let attempt = 0; attempt < retries; attempt++) {
+async function embedWithRetry(model: any, text: string): Promise<number[]> {
+  let attempt = 0
+  while (true) {
     try {
       const res = await model.embedContent({
         content: { parts: [{ text }], role: 'user' },
@@ -99,15 +100,15 @@ async function embedWithRetry(model: any, text: string, retries = 5): Promise<nu
       return res.embedding.values
     } catch (err: any) {
       if (err?.status === 429) {
-        const wait = 10000 * (attempt + 1) // 10s, 20s, 30s...
+        const wait = Math.min(10000 * (attempt + 1), 60000) // cap at 60s
         console.log(`\n  ⏳ Rate limited — waiting ${wait / 1000}s...`)
         await sleep(wait)
+        attempt++
       } else {
         throw err
       }
     }
   }
-  throw new Error('Max retries exceeded on embedding')
 }
 
 async function embedBatch(texts: string[]): Promise<number[][]> {
@@ -156,7 +157,13 @@ async function main() {
     const chunks = chunkTranscript(transcript)
     console.log(`  ${chunks.length} chunks`)
 
-    const embeddings = await embedBatch(chunks.map(c => c.text))
+    let embeddings: number[][]
+    try {
+      embeddings = await embedBatch(chunks.map(c => c.text))
+    } catch (err: any) {
+      console.log(`  ✗ Embedding failed — skipping: ${err.message}`)
+      continue
+    }
     console.log()
 
     await supabase.from('ot4m_videos').upsert({
