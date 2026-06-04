@@ -8,6 +8,7 @@ import CountdownBanner from "@/components/CountdownBanner";
 const links = [
   { href: "/about", label: "About" },
   { href: "/messages", label: "Messages" },
+  { href: "/donate", label: "Donate" },
   { href: "/contact", label: "Contact" },
 ];
 
