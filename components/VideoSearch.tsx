@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 type SearchResult = {
   video_id: string
@@ -12,6 +12,21 @@ type SearchResult = {
   url: string
 }
 
+const TOPICS = [
+  'Prayer',
+  'Marriage',
+  'Fatherhood',
+  'Temptation',
+  'Pride',
+  'Accountability',
+  "God's Will",
+  'Forgiveness',
+  'Fear',
+  'The Gospel',
+  'Leadership',
+  'Identity in Christ',
+]
+
 function formatTime(seconds: number) {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
@@ -21,31 +36,36 @@ function formatTime(seconds: number) {
 }
 
 export default function VideoSearch({ dark = false }: { dark?: boolean }) {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<SearchResult[]>([])
-  const [loading, setLoading] = useState(false)
-  const [searched, setSearched] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [query, setQuery]         = useState('')
+  const [results, setResults]     = useState<SearchResult[]>([])
+  const [loading, setLoading]     = useState(false)
+  const [searched, setSearched]   = useState(false)
+  const [error, setError]         = useState<string | null>(null)
+  const [activeTopic, setActive]  = useState<string | null>(null)
 
-  const fg = dark ? 'text-[#f7f4ef]' : 'text-[#1a1a18]'
-  const inputBg = dark ? 'bg-[#f7f4ef]/10 border-[#f7f4ef]/20 text-[#f7f4ef] placeholder:text-[#f7f4ef]/30' : 'bg-white border-[#1a1a18]/20 text-[#1a1a18] placeholder:text-[#1a1a18]/30'
+  const inputBg    = dark ? 'bg-[#f7f4ef]/10 border-[#f7f4ef]/20 text-[#f7f4ef] placeholder:text-[#f7f4ef]/30' : 'bg-white border-[#1a1a18]/20 text-[#1a1a18] placeholder:text-[#1a1a18]/30'
   const cardBorder = dark ? 'border-[#f7f4ef]/10 hover:border-[#f7f4ef]/30' : 'border-[#1a1a18]/10 hover:border-[#1a1a18]/30'
   const titleColor = dark ? 'text-[#f7f4ef]' : 'text-[#1a1a18]'
   const excerptColor = dark ? 'text-[#f7f4ef]/50' : 'text-[#1a1a18]/50'
-  const emptyColor = dark ? 'text-[#f7f4ef]/40' : 'text-[#1a1a18]/40'
+  const emptyColor   = dark ? 'text-[#f7f4ef]/40' : 'text-[#1a1a18]/40'
+  const labelColor   = dark ? 'text-[#f7f4ef]/30' : 'text-[#1a1a18]/30'
+  const chipBase     = dark
+    ? 'border-[#f7f4ef]/20 text-[#f7f4ef]/60 hover:border-[#f7f4ef]/50 hover:text-[#f7f4ef]'
+    : 'border-[#1a1a18]/15 text-[#1a1a18]/50 hover:border-[#1a1a18]/40 hover:text-[#1a1a18]'
+  const chipActive   = dark
+    ? 'border-[#c9a84c] bg-[#c9a84c]/15 text-[#c9a84c]'
+    : 'border-[#1a1a18] bg-[#1a1a18] text-[#f7f4ef]'
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    if (!query.trim()) return
+  async function runSearch(q: string) {
+    if (!q.trim()) return
     setLoading(true)
     setSearched(true)
     setError(null)
-
     try {
       const res = await fetch('/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query: q }),
       })
       const data = await res.json()
       if (data.error) setError(data.error)
@@ -57,13 +77,27 @@ export default function VideoSearch({ dark = false }: { dark?: boolean }) {
     }
   }
 
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault()
+    setActive(null)
+    runSearch(query)
+  }
+
+  const handleTopic = useCallback((topic: string) => {
+    if (activeTopic === topic) return
+    setActive(topic)
+    setQuery(topic)
+    runSearch(topic)
+  }, [activeTopic])
+
   return (
     <div className="w-full">
+      {/* Search bar */}
       <form onSubmit={handleSearch} className="flex gap-3">
         <input
           type="text"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => { setQuery(e.target.value); setActive(null) }}
           placeholder='Try "dealing with anger" or "being a better father"'
           className={`flex-1 px-4 py-3 border text-sm focus:outline-none focus:ring-1 focus:ring-white/30 ${inputBg}`}
           style={{ fontFamily: 'system-ui, sans-serif' }}
@@ -78,8 +112,30 @@ export default function VideoSearch({ dark = false }: { dark?: boolean }) {
         </button>
       </form>
 
+      {/* Topic chips */}
+      <div className="mt-5">
+        <p className={`text-[10px] tracking-[0.2em] uppercase mb-3 ${labelColor}`} style={{ fontFamily: 'system-ui, sans-serif' }}>
+          Browse by topic
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {TOPICS.map(topic => (
+            <button
+              key={topic}
+              onClick={() => handleTopic(topic)}
+              className={`px-3 py-1.5 border text-xs tracking-[0.08em] transition-all duration-150 ${
+                activeTopic === topic ? chipActive : chipBase
+              }`}
+              style={{ fontFamily: 'system-ui, sans-serif' }}
+            >
+              {topic}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Results */}
       {error && (
-        <p className={`mt-8 text-sm text-red-400`} style={{ fontFamily: 'system-ui, sans-serif' }}>
+        <p className="mt-8 text-sm text-red-400" style={{ fontFamily: 'system-ui, sans-serif' }}>
           Error: {error}
         </p>
       )}
