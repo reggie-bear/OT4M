@@ -104,10 +104,13 @@ function computeState(now: Date): BannerState {
     return { kind: "countdown", target, daysOut: i };
   }
 
-  // ③ Off-season — show next Labor Day
+  // ③ Off-season — show first Friday on or after Labor Day
   const labourThisYear = getLaborDay(et.year);
-  const nextStart = now < labourThisYear ? labourThisYear : getLaborDay(et.year + 1);
-  return { kind: "offseason", nextStart };
+  const labourBase = now < labourThisYear ? labourThisYear : getLaborDay(et.year + 1);
+  const daysToFriday = (5 - labourBase.getDay() + 7) % 7; // Labor Day is Mon → always 4
+  const firstFriday = new Date(labourBase);
+  firstFriday.setDate(labourBase.getDate() + daysToFriday);
+  return { kind: "offseason", nextStart: firstFriday };
 }
 
 function timeDiff(target: Date, now: Date) {
