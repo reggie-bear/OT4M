@@ -80,39 +80,17 @@ export default function Nav() {
         style={{ height: "64px" }}
       >
         {/* Logo */}
-        <Link
-          href="/"
-          style={{ textDecoration: "none" }}
-          className="flex flex-col leading-none group"
-        >
-          <span
+        <Link href="/" style={{ textDecoration: "none", display: "block" }} aria-label="One Thing for Men — Home">
+          <img
+            src="/ot4m-logo.png"
+            alt="One Thing for Men"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "1.35rem",
-              letterSpacing: "0.04em",
-              color: "var(--text)",
-              lineHeight: 1,
-              transition: "color 180ms ease",
+              height: "48px",
+              width: "auto",
+              display: "block",
+              mixBlendMode: "multiply",
             }}
-            className="group-hover:text-[var(--accent)]"
-          >
-            ONE THING
-          </span>
-          <span
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.6rem",
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--text-muted)",
-              lineHeight: 1,
-              marginTop: "3px",
-              transition: "color 180ms ease",
-            }}
-          >
-            For Men · Alpharetta, GA
-          </span>
+          />
         </Link>
 
         {/* Desktop nav */}
