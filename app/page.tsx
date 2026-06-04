@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import MessagesSearch from "@/components/MessagesSearch";
-import CountUp from "@/components/CountUp";
 import DrawBorderQuote from "@/components/DrawBorderQuote";
 import FillButton from "@/components/FillButton";
 import MaskHeadline from "@/components/MaskHeadline";
 import SectionHeader from "@/components/SectionHeader";
 import { useInView } from "@/hooks/useInView";
+import { useFridayCountdown } from "@/components/FridayCountdown";
 
 // ─── ScheduleRow — 2-col grid cell with paint-brush hover ────────────────────
 function ScheduleRow({ label, value, borderRight, borderBottom }: {
@@ -128,12 +128,56 @@ function MapEmbed() {
   );
 }
 
-const STATS = [
-  { value: "2009", label: "Founded" },
-  { value: "Friday", label: "Every week" },
-  { value: "7 AM", label: "Gather" },
-  { value: "Free", label: "Always" },
-];
+// ─── Hero countdown — live D/H/M/S until next Friday 7am ─────────────────────
+function HeroCountdown() {
+  const { d, h, m, s, offSeason, resumeDate } = useFridayCountdown();
+  const units = [
+    { v: d, l: "DAYS" },
+    { v: h, l: "HRS" },
+    { v: m, l: "MIN" },
+    { v: s, l: "SEC" },
+  ];
+  return (
+    <div>
+      <div style={{
+        fontFamily: "var(--font-body)", fontSize: "0.55rem", fontWeight: 700,
+        letterSpacing: "0.2em", textTransform: "uppercase",
+        color: "rgba(244,239,232,0.35)", marginBottom: "0.65rem",
+      }}>
+        {offSeason ? `Season resumes ${resumeDate} — first Friday in` : "Next meeting in"}
+      </div>
+      <div style={{ display: "flex", gap: "0.6rem", alignItems: "flex-end" }}>
+        {units.map(({ v, l }, i) => (
+          <div key={l} style={{ display: "flex", alignItems: "flex-end", gap: i < 3 ? "0.6rem" : 0 }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(2rem, 3.5vw, 3.25rem)",
+                lineHeight: 1, color: "var(--accent)",
+                letterSpacing: "0.02em", minWidth: "2.2ch",
+              }}>
+                {String(v).padStart(2, "0")}
+              </div>
+              <div style={{
+                fontFamily: "var(--font-body)", fontSize: "0.48rem", fontWeight: 700,
+                letterSpacing: "0.18em", textTransform: "uppercase",
+                color: "rgba(244,239,232,0.3)", marginTop: "0.2rem",
+              }}>{l}</div>
+            </div>
+            {i < 3 && (
+              <div style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)",
+                color: "rgba(244,239,232,0.18)",
+                marginBottom: "1.1rem", lineHeight: 1,
+              }}>:</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Home() {
@@ -142,31 +186,66 @@ export default function Home() {
   return (
     <>
       {/* ── HERO ── */}
-      <section style={{ minHeight: "calc(100vh - var(--header-height))", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 1.5rem 3rem", borderBottom: "2px solid var(--border)", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "url('/bible-bg.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.07, filter: "sepia(0.55) brightness(1.12) contrast(0.82)", WebkitMaskImage: "radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, rgba(0,0,0,0.55) 52%, transparent 78%)", maskImage: "radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, rgba(0,0,0,0.55) 52%, transparent 78%)", pointerEvents: "none" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`, backgroundRepeat: "repeat", pointerEvents: "none", opacity: 0.6 }} />
+      <section
+        className="grid grid-cols-1 lg:grid-cols-2"
+        style={{ minHeight: "calc(100vh - var(--header-height))", borderBottom: "2px solid var(--border)", position: "relative" }}
+      >
+        {/* ── LEFT: Countdown ─────────────────────────────── */}
+        <div
+          className="hero-countdown-panel"
+          style={{
+            background: "var(--bg-dark)",
+            padding: "clamp(2.5rem, 6vw, 5rem)",
+            display: "flex", flexDirection: "column", justifyContent: "space-between",
+            position: "relative", overflow: "hidden", minHeight: "50vh",
+          }}
+        >
+          <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "url('/bible-bg.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.06, filter: "sepia(0.55) brightness(1.12) contrast(0.82)", WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 30% 50%, black 20%, rgba(0,0,0,0.4) 55%, transparent 80%)", maskImage: "radial-gradient(ellipse 80% 70% at 30% 50%, black 20%, rgba(0,0,0,0.4) 55%, transparent 80%)", pointerEvents: "none" }} />
 
-        <div className="max-w-3xl mx-auto w-full" style={{ position: "relative" }}>
-          <div style={{ fontFamily: "var(--font-body)", fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.25rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) both" }}>Alpharetta, Georgia · Est. 2009</div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.5rem, 9vw, 8rem)", lineHeight: 0.9, letterSpacing: "0.01em", color: "var(--text)", marginBottom: "1.5rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
-          <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 400, fontStyle: "italic", color: "var(--text-muted)", marginBottom: "2.5rem", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
-          <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
-            <MessagesSearch />
+          {/* identity */}
+          <div style={{ position: "relative" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) both" }}>Alpharetta, Georgia · Est. 2009</div>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3rem, 5.5vw, 6.5rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "#F4EFE8", marginBottom: "1rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
+            <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(0.95rem, 1.6vw, 1.2rem)", fontWeight: 400, fontStyle: "italic", color: "rgba(244,239,232,0.5)", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
+          </div>
+
+          {/* meeting time + countdown */}
+          <div style={{ position: "relative", borderTop: "1px solid rgba(244,239,232,0.1)", paddingTop: "2.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(244,239,232,0.38)", marginBottom: "0.35rem" }}>We meet every</div>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.75rem, 5vw, 5rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "#F4EFE8", marginBottom: "0.2rem" }}>FRIDAY</div>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.4rem, 2.5vw, 2.25rem)", lineHeight: 1, letterSpacing: "0.04em", color: "var(--accent)", marginBottom: "2rem" }}>AT 7 AM</div>
+            <HeroCountdown />
+          </div>
+
+          {/* location */}
+          <div style={{ position: "relative", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 440ms both" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "rgba(244,239,232,0.38)", lineHeight: 1.75 }}>
+              Building 300 · 410 Rucker Road · Alpharetta, GA<br />
+              Doors open 6:30 AM · Free, every week
+            </div>
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto w-full" style={{ marginTop: "4rem", display: "flex", flexWrap: "wrap", gap: "2rem 3rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 480ms both", position: "relative" }}>
-          {STATS.map(s => (
-            <div key={s.label}>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "1.75rem", lineHeight: 1, color: "var(--text)", letterSpacing: "0.02em" }}><CountUp target={s.value} /></div>
-              <div style={{ fontFamily: "var(--font-body)", fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-light)", marginTop: "0.2rem" }}>{s.label}</div>
-            </div>
-          ))}
+        {/* ── RIGHT: Search ────────────────────────────────── */}
+        <div style={{
+          padding: "clamp(2.5rem, 6vw, 5rem)",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          position: "relative", minHeight: "50vh",
+        }}>
+          <div style={{ animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.25rem" }}>Search the archive</div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)", fontWeight: 700, lineHeight: 1.1, color: "var(--text)", marginBottom: "2rem" }}>15 years of teaching.<br />Find what you need.</h2>
+            <MessagesSearch />
+          </div>
         </div>
 
         <style>{`
           @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
           @keyframes heroReveal { from { opacity:0; transform:translateY(32px) skewY(1deg); } to { opacity:1; transform:translateY(0) skewY(0deg); } }
+          .hero-countdown-panel { border-right: 2px solid var(--border); border-bottom: none; }
+          @media (max-width: 1023px) {
+            .hero-countdown-panel { border-right: none !important; border-bottom: 2px solid var(--border) !important; }
+          }
         `}</style>
       </section>
 
