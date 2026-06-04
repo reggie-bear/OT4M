@@ -6,18 +6,18 @@ import SearchResults from "@/components/SearchResults";
 import { SearchResult } from "@/lib/types";
 
 const TOPICS = [
-  "Faith & Doubt",
+  "Prayer",
   "Marriage",
   "Fatherhood",
-  "Accountability",
-  "Prayer",
-  "Forgiveness",
-  "Purpose",
-  "Work & Calling",
-  "Identity",
   "Temptation",
+  "Pride",
+  "Accountability",
+  "God's Will",
+  "Forgiveness",
+  "Fear",
+  "The Gospel",
   "Leadership",
-  "Scripture",
+  "Identity in Christ",
 ];
 
 export default function MessagesSearch() {
