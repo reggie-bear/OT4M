@@ -142,7 +142,7 @@ function HeroCountdown() {
       <div style={{
         fontFamily: "var(--font-body)", fontSize: "0.55rem", fontWeight: 700,
         letterSpacing: "0.2em", textTransform: "uppercase",
-        color: "rgba(244,239,232,0.35)", marginBottom: "0.65rem",
+        color: "var(--text-light)", marginBottom: "0.65rem",
       }}>
         {offSeason ? `Season resumes ${resumeDate} — first Friday in` : "Next meeting in"}
       </div>
@@ -161,14 +161,14 @@ function HeroCountdown() {
               <div style={{
                 fontFamily: "var(--font-body)", fontSize: "0.48rem", fontWeight: 700,
                 letterSpacing: "0.18em", textTransform: "uppercase",
-                color: "rgba(244,239,232,0.3)", marginTop: "0.2rem",
+                color: "var(--text-light)", marginTop: "0.2rem",
               }}>{l}</div>
             </div>
             {i < 3 && (
               <div style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)",
-                color: "rgba(244,239,232,0.18)",
+                color: "var(--border-light)",
                 marginBottom: "1.1rem", lineHeight: 1,
               }}>:</div>
             )}
@@ -194,7 +194,7 @@ export default function Home() {
         <div
           className="hero-countdown-panel"
           style={{
-            background: "var(--bg-dark)",
+            background: "var(--bg-surface)",
             padding: "clamp(2.5rem, 6vw, 5rem)",
             display: "flex", flexDirection: "column", justifyContent: "space-between",
             position: "relative", overflow: "hidden", minHeight: "50vh",
@@ -205,21 +205,21 @@ export default function Home() {
           {/* identity */}
           <div style={{ position: "relative" }}>
             <div style={{ fontFamily: "var(--font-body)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "1.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) both" }}>Alpharetta, Georgia · Est. 2009</div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3rem, 5.5vw, 6.5rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "#F4EFE8", marginBottom: "1rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
-            <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(0.95rem, 1.6vw, 1.2rem)", fontWeight: 400, fontStyle: "italic", color: "rgba(244,239,232,0.5)", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3rem, 5.5vw, 6.5rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "var(--text)", marginBottom: "1rem", animation: "heroReveal 800ms cubic-bezier(0.16,1,0.3,1) 80ms both" }}>SPURRING<br />MEN ON</h1>
+            <p style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(0.95rem, 1.6vw, 1.2rem)", fontWeight: 400, fontStyle: "italic", color: "var(--text-muted)", lineHeight: 1.35, animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 200ms both" }}>to a closer walk with God</p>
           </div>
 
           {/* meeting time + countdown */}
-          <div style={{ position: "relative", borderTop: "1px solid rgba(244,239,232,0.1)", paddingTop: "2.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
-            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(244,239,232,0.38)", marginBottom: "0.35rem" }}>We meet every</div>
-            <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.75rem, 5vw, 5rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "#F4EFE8", marginBottom: "0.2rem" }}>FRIDAY</div>
+          <div style={{ position: "relative", borderTop: "1px solid var(--border-light)", paddingTop: "2.5rem", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 320ms both" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--text-light)", marginBottom: "0.35rem" }}>We meet every</div>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.75rem, 5vw, 5rem)", lineHeight: 0.88, letterSpacing: "0.01em", color: "var(--text)", marginBottom: "0.2rem" }}>FRIDAY</div>
             <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.4rem, 2.5vw, 2.25rem)", lineHeight: 1, letterSpacing: "0.04em", color: "var(--accent)", marginBottom: "2rem" }}>AT 7 AM</div>
             <HeroCountdown />
           </div>
 
           {/* location */}
           <div style={{ position: "relative", animation: "fadeUp 700ms cubic-bezier(0.16,1,0.3,1) 440ms both" }}>
-            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "rgba(244,239,232,0.38)", lineHeight: 1.75 }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--text-light)", lineHeight: 1.75 }}>
               Building 300 · 410 Rucker Road · Alpharetta, GA<br />
               Doors open 6:30 AM · Free, every week
             </div>
