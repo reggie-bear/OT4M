@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { embedQuery, searchVideos, generateAnswer, toVideoMatch } from "@/lib/gemini";
 
-export const runtime = "edge";
-
 export async function POST(req: NextRequest) {
   try {
     const { query } = await req.json();
