@@ -17,8 +17,16 @@ export async function POST(req: NextRequest) {
     const videos         = topVideos.map(({ video, score }) => toVideoMatch(video, score, q));
 
     return NextResponse.json({ answer, videos, query: q });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Search error:", err);
-    return NextResponse.json({ error: "Search failed. Please try again." }, { status: 500 });
+    return NextResponse.json({
+      error: "Search failed. Please try again.",
+      detail: String(err?.message || err),
+      env: {
+        gemini: !!process.env.GEMINI_API_KEY,
+        supaUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        supaKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      },
+    }, { status: 500 });
   }
 }
